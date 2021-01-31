@@ -4,35 +4,48 @@ const telephoneInput = document.getElementById("telephone");
 const emailInput = document.getElementById("email");
 
 /**
- * 
+ *
  * VALIDATORS
- *  
+ *
  */
 
 // Can only contain letters a-z in lowercase
-function isValidUsername(username) {}
+function isValidUsername(username) {
+  return /^[a-z]+$/g.test(username);
+}
 
 // Must contain a lowercase, uppercase letter and a number
-function isValidPassword(password) {}
+function isValidPassword(password) {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
+}
 
 // The telephone number must be in the format of (555) 555-5555
-function isValidTelephone(telephone) {}
+function isValidTelephone(telephone) {
+  return /^\D*\d{3}\D*\d{3}\D*\d{4}\D*$/.test(telephone);
+}
 
 // Must be a valid email address
-function isValidEmail(email) {}
+function isValidEmail(email) {
+  return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+    email
+  );
+}
 
 /**
- * 
+ *
  * FORMATTING FUNCTIONS
- * 
+ *
  */
 
-function formatTelephone(text) {}
+function formatTelephone(text) {
+  const regex = /^\D*(\d{3})\D*(\d{3})\D*(\d{4})\D*$/;
+  return text.replace(regex, "($1) $2-$3");
+}
 
 /**
- * 
+ *
  * SET UP EVENTS
- * 
+ *
  */
 
 function showOrHideTip(show, element) {
@@ -45,7 +58,7 @@ function showOrHideTip(show, element) {
 }
 
 function createListener(validator) {
-  return e => {
+  return (e) => {
     const text = e.target.value;
     const valid = validator(text);
     const showTip = text !== "" && !valid;
@@ -59,5 +72,8 @@ usernameInput.addEventListener("input", createListener(isValidUsername));
 passwordInput.addEventListener("input", createListener(isValidPassword));
 
 telephoneInput.addEventListener("input", createListener(isValidTelephone));
+telephoneInput.addEventListener("blur", (e) => {
+  e.target.value = formatTelephone(e.target.value);
+});
 
 emailInput.addEventListener("input", createListener(isValidEmail));
